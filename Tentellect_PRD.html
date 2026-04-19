@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRD — Tentellect Skeleton AI Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:      #0D0D0D;
+    --ink2:     #2A2A2A;
+    --ink3:     #4A4A4A;
+    --ink4:     #7A7A7A;
+    --page:     #FAFAF8;
+    --warm:     #F4F3EF;
+    --border:   #E0DED8;
+    --border2:  #C8C6C0;
+    --teal:     #0B7B6B;
+    --teal-bg:  #EAF5F3;
+    --amber:    #B45309;
+    --amber-bg: #FEF3C7;
+    --red:      #B91C1C;
+    --red-bg:   #FEE2E2;
+    --blue:     #1D4ED8;
+    --blue-bg:  #EFF6FF;
+    --purple:   #6D28D9;
+    --purple-bg:#F5F3FF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--page);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── LAYOUT ── */
+  .shell {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  aside {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 220px;
+    background: var(--warm);
+    border-right: 1px solid var(--border);
+    padding: 32px 0;
+    overflow-y: auto;
+    z-index: 10;
+  }
+
+  .sidebar-logo {
+    padding: 0 24px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+
+  .sidebar-logo-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .sidebar-logo-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--ink4);
+    letter-spacing: 0.04em;
+    margin-top: 4px;
+  }
+
+  .nav-section {
+    padding: 0 24px;
+    margin-bottom: 24px;
+  }
+
+  .nav-section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink4);
+    margin-bottom: 8px;
+  }
+
+  .nav-link {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--ink3);
+    text-decoration: none;
+    padding: 5px 0;
+    border-left: 2px solid transparent;
+    padding-left: 10px;
+    margin-left: -10px;
+    transition: color 0.15s, border-color 0.15s;
+    line-height: 1.4;
+  }
+
+  .nav-link:hover {
+    color: var(--ink);
+    border-left-color: var(--teal);
+  }
+
+  /* ── MAIN ── */
+  main {
+    margin-left: 220px;
+    max-width: 860px;
+    padding: 64px 64px 120px;
+  }
+
+  /* ── DOC HEADER ── */
+  .doc-header {
+    padding-bottom: 40px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 56px;
+  }
+
+  .doc-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .doc-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  .doc-subtitle {
+    font-size: 18px;
+    color: var(--ink3);
+    font-weight: 300;
+    line-height: 1.6;
+    max-width: 580px;
+    margin-bottom: 32px;
+    font-style: italic;
+  }
+
+  .doc-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .meta-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink4);
+  }
+
+  .meta-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink2);
+    font-weight: 500;
+  }
+
+  /* ── SECTIONS ── */
+  .prd-section {
+    margin-bottom: 64px;
+    scroll-margin-top: 32px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink4);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  /* ── PROSE ── */
+  p {
+    margin-bottom: 16px;
+    color: var(--ink2);
+    font-size: 15.5px;
+  }
+
+  p:last-child { margin-bottom: 0; }
+
+  strong { color: var(--ink); font-weight: 600; }
+  em { font-style: italic; }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin: 24px 0;
+    border-left: 3px solid;
+  }
+
+  .callout-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .callout p {
+    font-size: 14.5px;
+    margin: 0;
+    line-height: 1.65;
+  }
+
+  .callout-goal   { background: var(--teal-bg);   border-color: var(--teal);   }
+  .callout-goal   .callout-label { color: var(--teal); }
+  .callout-warn   { background: var(--amber-bg);  border-color: var(--amber);  }
+  .callout-warn   .callout-label { color: var(--amber); }
+  .callout-note   { background: var(--blue-bg);   border-color: var(--blue);   }
+  .callout-note   .callout-label { color: var(--blue); }
+  .callout-agent  { background: var(--purple-bg); border-color: var(--purple); }
+  .callout-agent  .callout-label { color: var(--purple); }
+  .callout-danger { background: var(--red-bg);    border-color: var(--red);    }
+  .callout-danger .callout-label { color: var(--red); }
+
+  /* ── SUBSECTIONS ── */
+  .subsection {
+    margin-bottom: 40px;
+  }
+
+  .subsection-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 12px;
+    letter-spacing: -0.005em;
+  }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    background: var(--ink);
+    color: #E8E6E0;
+    border-radius: 8px;
+    padding: 24px 28px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.8;
+    margin: 20px 0;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .code-block .cb-label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #6B7280;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .code-block .c  { color: #6B7280; font-style: italic; }
+  .code-block .k  { color: #93C5FD; }
+  .code-block .s  { color: #86EFAC; }
+  .code-block .n  { color: #FCD34D; }
+  .code-block .fn { color: #C4B5FD; }
+  .code-block .v  { color: #F9A8D4; }
+
+  /* ── INLINE CODE ── */
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    background: var(--warm);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: var(--ink2);
+  }
+
+  /* ── TABLES ── */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 20px 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead th {
+    background: var(--warm);
+    padding: 10px 16px;
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.55;
+    color: var(--ink2);
+    font-size: 13.5px;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) td { background: #FDFCF9; }
+
+  .td-mono {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+  }
+
+  .td-bold { font-weight: 600; color: var(--ink); }
+
+  .badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  .badge-green  { background: var(--teal-bg);   color: var(--teal);   border: 1px solid #B2DFD8; }
+  .badge-amber  { background: var(--amber-bg);  color: var(--amber);  border: 1px solid #FDE68A; }
+  .badge-blue   { background: var(--blue-bg);   color: var(--blue);   border: 1px solid #BFDBFE; }
+  .badge-purple { background: var(--purple-bg); color: var(--purple); border: 1px solid #DDD6FE; }
+  .badge-red    { background: var(--red-bg);    color: var(--red);    border: 1px solid #FECACA; }
+  .badge-gray   { background: var(--warm);      color: var(--ink3);   border: 1px solid var(--border); }
+
+  /* ── STEP LIST ── */
+  .step-list {
+    list-style: none;
+    margin: 16px 0;
+  }
+
+  .step-item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--page);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-content { padding-top: 3px; }
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .step-body {
+    font-size: 14px;
+    color: var(--ink3);
+    line-height: 1.6;
+  }
+
+  /* ── BULLET LIST ── */
+  ul.prd-list {
+    list-style: none;
+    margin: 12px 0;
+  }
+
+  ul.prd-list li {
+    padding: 6px 0 6px 20px;
+    position: relative;
+    font-size: 14.5px;
+    color: var(--ink2);
+    line-height: 1.6;
+    border-bottom: 1px solid var(--border);
+  }
+
+  ul.prd-list li:last-child { border-bottom: none; }
+
+  ul.prd-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--teal);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    top: 7px;
+  }
+
+  /* ── AGENT INSTRUCTION BLOCK ── */
+  .agent-block {
+    background: var(--warm);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin: 24px 0;
+    overflow: hidden;
+  }
+
+  .agent-block-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: var(--purple-bg);
+    border-bottom: 1px solid #DDD6FE;
+  }
+
+  .agent-block-icon {
+    width: 20px; height: 20px;
+    background: var(--purple);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .agent-block-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--purple);
+  }
+
+  .agent-block-body {
+    padding: 20px;
+  }
+
+  .agent-block-body p {
+    font-size: 14px;
+    color: var(--ink2);
+    margin-bottom: 10px;
+  }
+
+  .agent-block-body p:last-child { margin-bottom: 0; }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    position: relative;
+    padding-left: 32px;
+    margin: 24px 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 8px; bottom: 8px;
+    width: 1px;
+    background: var(--border2);
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 32px;
+  }
+
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -28px;
+    top: 7px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--page);
+    border: 2px solid var(--ink);
+  }
+
+  .tl-week {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink4);
+    margin-bottom: 4px;
+  }
+
+  .tl-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .tl-body {
+    font-size: 14px;
+    color: var(--ink3);
+    line-height: 1.65;
+  }
+
+  .tl-tasks {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .tl-task {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--ink3);
+    line-height: 1.5;
+  }
+
+  .tl-task-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* ── FOOTER ── */
+  .doc-footer {
+    border-top: 2px solid var(--ink);
+    padding-top: 32px;
+    margin-top: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink4);
+    line-height: 1.6;
+  }
+
+  .footer-right {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── DATA TABLE ROW COLOURS ── */
+  .row-free     td:last-child { color: var(--teal); font-weight: 600; font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+  .row-request  td:last-child { color: var(--amber); font-weight: 600; font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+
+  /* ── PRINT ── */
+  @media print {
+    aside { display: none; }
+    main { margin-left: 0; padding: 32px; }
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--warm); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* ── PHASE GRID ── */
+  .phase-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .phase-card {
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .phase-card-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .phase-card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .phase-card-body {
+    font-size: 13px;
+    color: var(--ink3);
+    line-height: 1.6;
+  }
+
+  .pc-p0 { background: var(--teal-bg);   border-color: #B2DFD8; }
+  .pc-p0 .phase-card-label { color: var(--teal); }
+  .pc-p1 { background: var(--blue-bg);   border-color: #BFDBFE; }
+  .pc-p1 .phase-card-label { color: var(--blue); }
+  .pc-p2 { background: var(--amber-bg);  border-color: #FDE68A; }
+  .pc-p2 .phase-card-label { color: var(--amber); }
+  .pc-p3 { background: var(--purple-bg); border-color: #DDD6FE; }
+  .pc-p3 .phase-card-label { color: var(--purple); }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ── SIDEBAR ── -->
+<aside>
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-text">Tentellect</div>
+    <div class="sidebar-logo-sub">PRD — v1.0 · Apr 2025</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Overview</div>
+    <a href="#meta" class="nav-link">Document Meta</a>
+    <a href="#context" class="nav-link">Context & Reframe</a>
+    <a href="#goal" class="nav-link">Goal</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Data</div>
+    <a href="#datasets" class="nav-link">Free Datasets</a>
+    <a href="#download" class="nav-link">Download Instructions</a>
+    <a href="#quality" class="nav-link">Quality Gates</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Pipeline</div>
+    <a href="#arch" class="nav-link">Architecture</a>
+    <a href="#ingestion" class="nav-link">Ingestion Layer</a>
+    <a href="#skeleton" class="nav-link">Skeleton Extraction</a>
+    <a href="#imu" class="nav-link">IMU Fusion</a>
+    <a href="#annotation" class="nav-link">Auto-annotation</a>
+    <a href="#storage" class="nav-link">Storage & Versioning</a>
+    <a href="#training" class="nav-link">Training Loop</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Execution</div>
+    <a href="#phases" class="nav-link">Phase Plan</a>
+    <a href="#agent" class="nav-link">Agent Instructions</a>
+    <a href="#success" class="nav-link">Success Metrics</a>
+    <a href="#risks" class="nav-link">Risks</a>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main>
+
+  <!-- DOC HEADER -->
+  <div class="doc-header">
+    <span class="doc-tag">Product Requirements Document</span>
+    <h1 class="doc-title">Skeleton-Based Industrial<br>AI Pipeline</h1>
+    <p class="doc-subtitle">Free-data-first approach to building a working skeleton extraction, auto-annotation, and action recognition system — before a single device is manufactured.</p>
+    <div class="doc-meta" id="meta">
+      <div class="meta-item">
+        <span class="meta-label">Project</span>
+        <span class="meta-value">Tentellect / Data Infra</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Author</span>
+        <span class="meta-value">Anvin (AI Lead)</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Version</span>
+        <span class="meta-value">1.0</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Status</span>
+        <span class="meta-value">Active / Draft</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Date</span>
+        <span class="meta-value">April 2025</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Horizon</span>
+        <span class="meta-value">8 Weeks</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 0. CONTEXT & REFRAME -->
+  <div class="prd-section" id="context">
+    <div class="section-header">
+      <span class="section-num">00</span>
+      <h2 class="section-title">Context & Strategic Reframe</h2>
+    </div>
+
+    <p>The original plan assumed hardware-first: build a device, deploy to a factory, collect data, then train models. This PRD inverts that order. The insight is simple — <strong>you cannot pitch to robotics companies with a diagram. You pitch with a running system.</strong></p>
+
+    <p>This document defines the pipeline required to go from zero to a working, demo-ready skeleton AI system using entirely free public datasets. The device and factory deployment come after you have traction to show.</p>
+
+    <div class="callout callout-goal">
+      <div class="callout-label">Strategic Goal</div>
+      <p>Build a complete skeleton extraction, auto-annotation, and action recognition pipeline on free public industrial data. Use this as the technical proof to unlock access to robotics companies' proprietary datasets and factory deployments — without spending money on hardware or factory negotiations first.</p>
+    </div>
+
+    <div class="callout callout-warn">
+      <div class="callout-label">Key Constraint</div>
+      <p>Two engineers. No dedicated GPU cluster. No factory access yet. Every architectural decision must reflect this reality. Colab Pro ($10/month) and Vast.ai spot instances ($0.30/hr) are the compute budget. Everything else is free.</p>
+    </div>
+  </div>
+
+  <!-- 1. GOAL -->
+  <div class="prd-section" id="goal">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Goal & Success Definition</h2>
+    </div>
+
+    <p>By end of Week 8, the system must be able to accept <strong>any industrial video or image folder as input</strong> and return:</p>
+
+    <ul class="prd-list">
+      <li>A COCO-format keypoints JSON with 33-landmark skeleton per detected worker per frame</li>
+      <li>Per-keypoint confidence scores with automatic accept/review/discard classification</li>
+      <li>PPE compliance score per worker (helmet, vest, gloves detected relative to skeleton)</li>
+      <li>A 20-dimension feature vector per worker per 1-second window (spatial + temporal)</li>
+      <li>Action class prediction (fall / bend / walk / reach / idle / danger posture)</li>
+      <li>Risk score ∈ [0.0, 1.0] per worker per window</li>
+      <li>Auto-annotation export in COCO JSON, YOLO TXT, and CSV formats</li>
+      <li>A Label Studio review queue for all frames below the confidence threshold</li>
+    </ul>
+
+    <div class="callout callout-note">
+      <div class="callout-label">The Demo Deliverable</div>
+      <p>The output of Week 8 is a single script: <code>python run_pipeline.py --input /path/to/video</code> that processes any factory video and produces annotated skeletons, risk scores, and a dataset export — in under 5 minutes for a 1-hour video. This is what you show robotics companies.</p>
+    </div>
+  </div>
+
+  <!-- 2. FREE DATASETS -->
+  <div class="prd-section" id="datasets">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Free Datasets — What to Download</h2>
+    </div>
+
+    <p>All datasets below are free, publicly available, and legally usable for training ML models. Listed in priority order — download Tier 1 in Week 1, Tier 2 when pipeline is running.</p>
+
+    <div class="subsection">
+      <div class="subsection-title">Tier 1 — Start Immediately</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Dataset</th>
+              <th>Size</th>
+              <th>What It Contains</th>
+              <th>Why You Need It</th>
+              <th>License</th>
+              <th>Access</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-free">
+              <td class="td-bold">COCO 2017 Keypoints</td>
+              <td class="td-mono">~18GB</td>
+              <td>200k+ images, 17 COCO keypoints per person, full COCO JSON annotations</td>
+              <td>Universal baseline. Every model is pretrained on this. Your fine-tune starts here.</td>
+              <td><span class="badge badge-green">CC BY 4.0</span></td>
+              <td>Free</td>
+            </tr>
+            <tr class="row-free">
+              <td class="td-bold">SH17 Dataset</td>
+              <td class="td-mono">~2.1GB</td>
+              <td>8,099 industrial images, 75,994 instances, 17 PPE classes (helmet, vest, gloves, glasses, mask, boots...)</td>
+              <td>Your industrial fine-tune data. PPE detection on real manufacturing workers. Already annotated in YOLO format.</td>
+              <td><span class="badge badge-green">CC BY-NC-SA 4.0</span></td>
+              <td>Free</td>
+            </tr>
+            <tr class="row-free">
+              <td class="td-bold">Roboflow Worker Safety</td>
+              <td class="td-mono">~300MB</td>
+              <td>1,206 helmet/PPE detection images, YOLO + COCO format export</td>
+              <td>Quick-start fine-tune data. Smaller but clean. Good for initial validation.</td>
+              <td><span class="badge badge-green">CC BY 4.0</span></td>
+              <td>Free</td>
+            </tr>
+            <tr class="row-free">
+              <td class="td-bold">iSafetyBench</td>
+              <td class="td-mono">~8GB</td>
+              <td>1,100 video clips, 98 routine + 67 hazardous industrial action categories, multi-label annotations</td>
+              <td>Only benchmark dataset for industrial hazard recognition in video. Critical for evaluating your risk classifier.</td>
+              <td><span class="badge badge-green">Research</span></td>
+              <td>Free</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Tier 2 — Download When Pipeline is Running (Week 3+)</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Dataset</th>
+              <th>Size</th>
+              <th>What It Contains</th>
+              <th>Why You Need It</th>
+              <th>License</th>
+              <th>Access</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-request">
+              <td class="td-bold">OpenMarcie</td>
+              <td class="td-mono">~40GB</td>
+              <td>37+ hours egocentric + exocentric video, IMU wearable data, 8 sensing modalities, bicycle + 3D printer assembly tasks, 36 participants</td>
+              <td>The crown jewel. Real industrial assembly with synchronized IMU — lets you validate your IMU fusion layer on real data before you have your own device.</td>
+              <td><span class="badge badge-amber">Request</span></td>
+              <td>Request form</td>
+            </tr>
+            <tr class="row-request">
+              <td class="td-bold">Human3.6M</td>
+              <td class="td-mono">~32GB</td>
+              <td>3.6M frames, 3D skeleton (24 joints), 11 actors, 17 action classes, multi-camera</td>
+              <td>Foundation for 2D→3D skeleton lifting. Trains your monocular depth estimation component.</td>
+              <td><span class="badge badge-amber">Request</span></td>
+              <td>Request form</td>
+            </tr>
+            <tr class="row-request">
+              <td class="td-bold">NTU RGB+D 120</td>
+              <td class="td-mono">~130GB</td>
+              <td>114k skeleton sequences, 120 action classes, 3D joints (25 per frame), RGB+D video</td>
+              <td>Largest skeleton action dataset. Trains your action classifier. Covers falls, lifting, throwing, sitting — all relevant to industrial safety.</td>
+              <td><span class="badge badge-amber">Request</span></td>
+              <td>Request form</td>
+            </tr>
+            <tr class="row-free">
+              <td class="td-bold">CMU Panoptic Studio</td>
+              <td class="td-mono">Varies</td>
+              <td>Multi-view skeleton sequences, 3D body pose, social interactions</td>
+              <td>Multi-person tracking validation. Tests your ByteTrack implementation against ground truth.</td>
+              <td><span class="badge badge-green">CC BY 4.0</span></td>
+              <td>Free</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout callout-agent">
+      <div class="callout-label">Agent Task — Dataset Download</div>
+      <p>Write a <code>scripts/download_datasets.sh</code> script that: (1) downloads COCO 2017 train+val keypoints zip from cocodataset.org and extracts to <code>data/coco/</code>, (2) clones the SH17 dataset repo from <code>github.com/ahmadmughees/SH17dataset</code> into <code>data/sh17/</code>, (3) downloads the iSafetyBench videos from the arXiv paper link into <code>data/isafety/</code>, (4) downloads the Roboflow Worker Safety dataset via the Roboflow API (free tier). Each download should verify checksum and print file counts on completion. Include a <code>requirements.txt</code> entry for <code>roboflow</code> CLI.</p>
+    </div>
+  </div>
+
+  <!-- 3. DOWNLOAD INSTRUCTIONS -->
+  <div class="prd-section" id="download">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Download & Setup Instructions</h2>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Repository Structure</div>
+      <div class="code-block">
+        <span class="cb-label">Expected directory tree after setup</span>
+tentellect-pipeline/
+├── data/
+│   ├── coco/
+│   │   ├── images/train2017/        <span class="c"># 118k images</span>
+│   │   ├── images/val2017/          <span class="c"># 5k images</span>
+│   │   └── annotations/
+│   │       ├── person_keypoints_train2017.json
+│   │       └── person_keypoints_val2017.json
+│   ├── sh17/
+│   │   ├── images/                  <span class="c"># 8,099 industrial images</span>
+│   │   └── labels/                  <span class="c"># YOLO format annotations</span>
+│   ├── isafety/
+│   │   ├── clips/                   <span class="c"># 1,100 video clips</span>
+│   │   └── annotations.json
+│   ├── openmarcie/                  <span class="c"># Week 3+ after request approved</span>
+│   └── processed/                   <span class="c"># Pipeline outputs go here</span>
+│       ├── skeletons/               <span class="c"># Per-session COCO keypoint JSON</span>
+│       ├── features/                <span class="c"># 20-dim feature vectors (.npy)</span>
+│       └── review_queue/            <span class="c"># Low-confidence frames for Label Studio</span>
+├── src/
+│   ├── ingestion/
+│   ├── skeleton/
+│   ├── imu/
+│   ├── annotation/
+│   ├── features/
+│   ├── training/
+│   └── serving/
+├── scripts/
+│   ├── download_datasets.sh
+│   ├── validate_datasets.py
+│   └── run_pipeline.py
+├── models/
+│   └── checkpoints/
+├── configs/
+│   └── pipeline.yaml
+├── tests/
+└── README.md
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Environment Setup</div>
+      <div class="code-block">
+        <span class="cb-label">environment — Python 3.11 + CUDA 12.1</span>
+<span class="c"># Create environment</span>
+<span class="k">conda</span> create -n tentellect <span class="s">python=3.11</span> -y
+<span class="k">conda</span> activate tentellect
+
+<span class="c"># Core inference</span>
+<span class="k">pip</span> install ultralytics==8.2.0          <span class="c"># YOLOv8-Pose</span>
+<span class="k">pip</span> install mediapipe==0.10.18          <span class="c"># 33-landmark extraction</span>
+<span class="k">pip</span> install onnxruntime-gpu==1.18.0     <span class="c"># ONNX inference backend</span>
+
+<span class="c"># Data & annotation</span>
+<span class="k">pip</span> install pycocotools==2.0.7          <span class="c"># COCO format parsing</span>
+<span class="k">pip</span> install label-studio==1.12.0       <span class="c"># Local annotation UI</span>
+<span class="k">pip</span> install label-studio-sdk           <span class="c"># Python integration</span>
+<span class="k">pip</span> install dvc[s3]==3.50.0            <span class="c"># Dataset versioning</span>
+
+<span class="c"># ML stack</span>
+<span class="k">pip</span> install torch==2.3.0 torchvision   <span class="c"># Training backbone</span>
+<span class="k">pip</span> install xgboost==2.0.3             <span class="c"># Risk scorer</span>
+<span class="k">pip</span> install shap==0.45.0               <span class="c"># Decision explanation</span>
+<span class="k">pip</span> install mlflow==2.13.0             <span class="c"># Experiment tracking</span>
+<span class="k">pip</span> install optuna==3.6.0              <span class="c"># Hyperparameter search</span>
+
+<span class="c"># Utilities</span>
+<span class="k">pip</span> install opencv-python-headless     <span class="c"># Frame processing</span>
+<span class="k">pip</span> install numpy scipy pandas         <span class="c"># Feature computation</span>
+<span class="k">pip</span> install tqdm rich pyyaml           <span class="c"># CLI tooling</span>
+<span class="k">pip</span> install fastapi uvicorn            <span class="c"># Serving layer</span>
+      </div>
+    </div>
+
+    <div class="callout callout-warn">
+      <div class="callout-label">Compute Note</div>
+      <p>Run pipeline on <strong>Vast.ai RTX 4090 spot instance (~$0.45/hr)</strong> for dataset processing. Use <strong>Google Colab Pro ($10/month)</strong> for model training experiments. Local dev machine handles code, configs, and data validation only. Terminate cloud instances immediately after each run — never leave idle.</p>
+    </div>
+  </div>
+
+  <!-- 4. QUALITY GATES -->
+  <div class="prd-section" id="quality">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Data Quality Gates</h2>
+    </div>
+
+    <p>Every frame entering the pipeline passes through three gates. No frame that fails all three gates enters the training dataset.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Gate</th>
+            <th>Condition</th>
+            <th>Threshold</th>
+            <th>Action on Pass</th>
+            <th>Action on Fail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-bold">G1 — Detection</td>
+            <td>At least one person detected with bbox confidence</td>
+            <td><code>&gt; 0.60</code></td>
+            <td>Proceed to G2</td>
+            <td>Discard frame</td>
+          </tr>
+          <tr>
+            <td class="td-bold">G2 — Pose Confidence</td>
+            <td>Mean keypoint confidence across all 17 critical joints</td>
+            <td><code>&gt; 0.85</code> → auto-accept<br><code>0.50–0.85</code> → review<br><code>&lt; 0.50</code> → discard</td>
+            <td>Auto: write to dataset<br>Review: Label Studio queue</td>
+            <td>Discard</td>
+          </tr>
+          <tr>
+            <td class="td-bold">G3 — Keypoint Plausibility</td>
+            <td>Anatomical validity check — limb length ratios within ±30% of biomechanical norms, no self-intersecting skeleton</td>
+            <td>Pass/fail rule-based check</td>
+            <td>Accept with G2 decision</td>
+            <td>Route to review regardless of G2</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-agent">
+      <div class="callout-label">Agent Task — Quality Gate Implementation</div>
+      <p>Implement <code>src/annotation/quality_gates.py</code> with a <code>QualityGate</code> class that takes a frame's keypoint dict (COCO format) and returns one of <code>AUTO_ACCEPT</code>, <code>REVIEW</code>, or <code>DISCARD</code> with a reason string. The plausibility check must validate: (1) shoulder width / height ratio in [0.2, 0.8], (2) arm length symmetry within 20%, (3) no keypoint coordinate outside frame bounds, (4) minimum 8 of 17 keypoints visible. Write pytest tests covering edge cases: fully occluded worker, multiple workers, headless detection.</p>
+    </div>
+  </div>
+
+  <!-- 5. ARCHITECTURE -->
+  <div class="prd-section" id="arch">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">Pipeline Architecture</h2>
+    </div>
+
+    <div class="code-block">
+      <span class="cb-label">End-to-end pipeline — data flow</span>
+INPUT (video file / image folder / RTSP stream)
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│  INGESTION LAYER                                        │
+│  ffmpeg frame extraction @ 2fps (dataset) / 15fps (RT)  │
+│  Resolution normalize → 640×480                         │
+│  CLAHE preprocessing (factory lighting compensation)    │
+│  Metadata tagging: source_id, frame_idx, timestamp      │
+└──────────────────────┬──────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────┐
+│  SKELETON EXTRACTION                                    │
+│  Stage 1: YOLOv8-Pose → person detection + 17 COCO kps │
+│  Stage 2: MediaPipe Pose → 33 landmarks + world 3D      │
+│  Stage 3: ByteTrack → persistent worker IDs across time │
+│  Stage 4: DeepSORT Re-ID → cross-camera identity        │
+│  Output: {track_id, keypoints_17, keypoints_33,          │
+│           confidence[], bbox, world_3d[]}               │
+└──────────────────────┬──────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────┐
+│  PPE CLASSIFIER (parallel stream)                       │
+│  EfficientNet-Lite0 on cropped worker ROI               │
+│  Classes: helmet, vest, gloves, glasses (multi-label)   │
+│  Output: ppe_score ∈ [0,1] per class                    │
+└──────────────────────┬──────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────┐
+│  QUALITY GATES (G1, G2, G3)                             │
+│  → AUTO_ACCEPT | REVIEW | DISCARD                       │
+└──────────────────────┬──────────────────────────────────┘
+                       │
+              ┌────────┴────────┐
+              ▼                 ▼
+        AUTO_ACCEPT           REVIEW
+              │                 │
+        Feature Extract    Label Studio
+              │             review queue
+              ▼
+┌─────────────────────────────────────────────────────────┐
+│  FEATURE EXTRACTION                                     │
+│  Spatial: angles, zone_id, ppe_score, bbox_area         │
+│  Temporal: velocity, accel, dwell_time (30-frame window) │
+│  IMU fusion: torso_pitch, roll, fall_flag (if available) │
+│  Output: float32[20] per worker per 1-second window     │
+└──────────────────────┬──────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────┐
+│  RISK SCORING                                           │
+│  XGBoost classifier → risk_score ∈ [0.0, 1.0]          │
+│  SHAP explanation → top 5 contributing features         │
+│  Action class → fall / bend / walk / reach / idle       │
+└──────────────────────┬──────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────┐
+│  STORAGE & EXPORT                                       │
+│  SQLite: annotations + metadata                         │
+│  COCO JSON export (keypoints format)                    │
+│  YOLO TXT export (for fine-tuning)                      │
+│  CSV export (features + risk scores)                    │
+│  DVC commit: dataset version locked                     │
+└─────────────────────────────────────────────────────────┘
+    </div>
+  </div>
+
+  <!-- 6. INGESTION -->
+  <div class="prd-section" id="ingestion">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2 class="section-title">Ingestion Layer</h2>
+    </div>
+
+    <p>Accepts any video file (MP4, AVI, MKV), image folder, RTSP stream URL, or COCO JSON directory. Normalizes all inputs to a standard frame stream before skeleton extraction.</p>
+
+    <div class="subsection">
+      <div class="subsection-title">Frame Extraction Strategy</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Mode</th><th>Source</th><th>FPS</th><th>Resolution</th><th>Use Case</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-bold">dataset</td>
+              <td class="td-mono">video file</td>
+              <td class="td-mono">2 fps</td>
+              <td class="td-mono">640×480</td>
+              <td>Building training dataset from existing footage</td>
+            </tr>
+            <tr>
+              <td class="td-bold">realtime</td>
+              <td class="td-mono">RTSP / webcam</td>
+              <td class="td-mono">15 fps</td>
+              <td class="td-mono">640×480</td>
+              <td>Live demo / cloud offload from field device</td>
+            </tr>
+            <tr>
+              <td class="td-bold">batch</td>
+              <td class="td-mono">image folder</td>
+              <td class="td-mono">N/A</td>
+              <td class="td-mono">as-is → resize</td>
+              <td>Processing SH17 / iSafetyBench still images</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Preprocessing — CLAHE for Factory Lighting</div>
+      <div class="code-block">
+        <span class="cb-label">src/ingestion/preprocess.py — core function</span>
+<span class="k">import</span> cv2
+<span class="k">import</span> numpy <span class="k">as</span> np
+
+<span class="k">def</span> <span class="fn">preprocess_frame</span>(frame: np.ndarray) -> np.ndarray:
+    <span class="s">"""
+    Apply CLAHE (Contrast Limited Adaptive Histogram Equalization)
+    to compensate for uneven factory floor lighting.
+    Converts to LAB, equalizes L channel only, converts back.
+    Dramatically improves pose estimation under fluorescent/shadow conditions.
+    """</span>
+    lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
+    l, a, b = cv2.split(lab)
+    
+    <span class="c"># clipLimit=2.0 prevents over-amplification of noise</span>
+    <span class="c"># tileGridSize=(8,8) means 64 local regions per frame</span>
+    clahe = cv2.createCLAHE(clipLimit=<span class="n">2.0</span>, tileGridSize=(<span class="n">8</span>,<span class="n">8</span>))
+    l_eq = clahe.apply(l)
+    
+    merged = cv2.merge([l_eq, a, b])
+    <span class="k">return</span> cv2.cvtColor(merged, cv2.COLOR_LAB2BGR)
+
+<span class="k">def</span> <span class="fn">normalize_resolution</span>(frame: np.ndarray,
+                          target: tuple = (<span class="n">640</span>, <span class="n">480</span>)) -> np.ndarray:
+    <span class="s">"""Letterbox resize — no distortion, pads with grey."""</span>
+    h, w = frame.shape[:<span class="n">2</span>]
+    scale = min(target[<span class="n">0</span>]/w, target[<span class="n">1</span>]/h)
+    new_w, new_h = int(w*scale), int(h*scale)
+    resized = cv2.resize(frame, (new_w, new_h))
+    canvas = np.full((target[<span class="n">1</span>], target[<span class="n">0</span>], <span class="n">3</span>), <span class="n">114</span>, dtype=np.uint8)
+    x0 = (target[<span class="n">0</span>] - new_w) // <span class="n">2</span>
+    y0 = (target[<span class="n">1</span>] - new_h) // <span class="n">2</span>
+    canvas[y0:y0+new_h, x0:x0+new_w] = resized
+    <span class="k">return</span> canvas
+      </div>
+    </div>
+
+    <div class="callout callout-agent">
+      <div class="callout-label">Agent Task — Ingestion Layer</div>
+      <p>Implement <code>src/ingestion/ingestor.py</code> with a <code>DataIngestor</code> class. It must accept <code>source</code> (path string or URL), <code>mode</code> (dataset / realtime / batch), and <code>session_id</code>. It must yield preprocessed frames as a generator with metadata dict attached: <code>{frame_idx, timestamp_ms, source_id, session_id}</code>. Use ffmpeg-python for video decoding, not OpenCV VideoCapture — ffmpeg is faster and handles more codecs. Write a CLI wrapper in <code>scripts/ingest.py</code> that takes a source path and prints frame count + sample metadata to stdout.</p>
+    </div>
+  </div>
+
+  <!-- 7. SKELETON EXTRACTION -->
+  <div class="prd-section" id="skeleton">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2 class="section-title">Skeleton Extraction</h2>
+    </div>
+
+    <p>Two-model approach: YOLOv8-Pose for multi-person detection and 17 COCO keypoints, MediaPipe Pose for 33-landmark detail and world 3D coordinates. ByteTrack handles identity persistence across frames.</p>
+
+    <div class="subsection">
+      <div class="subsection-title">Model Selection Logic</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Condition</th><th>Primary Model</th><th>Reason</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1 person in frame</td>
+              <td><span class="badge badge-blue">MediaPipe Pose</span></td>
+              <td>Faster, 33 landmarks, world 3D coords, more accurate for single person</td>
+            </tr>
+            <tr>
+              <td>2+ persons in frame</td>
+              <td><span class="badge badge-purple">YOLOv8-Pose</span></td>
+              <td>Multi-person native, handles occlusion between workers better</td>
+            </tr>
+            <tr>
+              <td>Low confidence (&lt;0.7)</td>
+              <td><span class="badge badge-amber">Both + ensemble</span></td>
+              <td>Average predictions where both models agree, flag disagreement</td>
+            </tr>
+            <tr>
+              <td>Video sequence (not image)</td>
+              <td><span class="badge badge-purple">YOLOv8-Pose + ByteTrack</span></td>
+              <td>Tracking requires detection model — MediaPipe is single-frame only</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Skeleton Output Schema</div>
+      <div class="code-block">
+        <span class="cb-label">Output JSON schema per detection — stored in SQLite + COCO JSON</span>
+{
+  <span class="s">"frame_idx"</span>: <span class="n">1420</span>,
+  <span class="s">"timestamp_ms"</span>: <span class="n">47333</span>,
+  <span class="s">"session_id"</span>: <span class="s">"sh17_batch_001"</span>,
+  <span class="s">"track_id"</span>: <span class="s">"worker_003"</span>,
+  <span class="s">"bbox"</span>: [<span class="n">124</span>, <span class="n">88</span>, <span class="n">312</span>, <span class="n">450</span>],         <span class="c"># [x1, y1, x2, y2]</span>
+  <span class="s">"detection_confidence"</span>: <span class="n">0.94</span>,
+  <span class="s">"keypoints_17"</span>: [                      <span class="c"># COCO 17 keypoints</span>
+    {<span class="s">"name"</span>: <span class="s">"nose"</span>,        <span class="s">"x"</span>: <span class="n">218</span>, <span class="s">"y"</span>: <span class="n">102</span>, <span class="s">"conf"</span>: <span class="n">0.97</span>},
+    {<span class="s">"name"</span>: <span class="s">"left_shoulder"</span>, <span class="s">"x"</span>: <span class="n">167</span>, <span class="s">"y"</span>: <span class="n">189</span>, <span class="s">"conf"</span>: <span class="n">0.92</span>},
+    <span class="c"># ... 15 more keypoints</span>
+  ],
+  <span class="s">"keypoints_33"</span>: [<span class="c">/* MediaPipe 33 landmarks */</span>],
+  <span class="s">"world_3d"</span>: [                          <span class="c"># MediaPipe world coordinates (metres)</span>
+    {<span class="s">"name"</span>: <span class="s">"nose"</span>, <span class="s">"x"</span>: <span class="n">0.02</span>, <span class="s">"y"</span>: -<span class="n">0.44</span>, <span class="s">"z"</span>: -<span class="n">0.08</span>},
+    <span class="c"># ... 32 more world landmarks</span>
+  ],
+  <span class="s">"mean_confidence"</span>: <span class="n">0.88</span>,
+  <span class="s">"quality_gate"</span>: <span class="s">"AUTO_ACCEPT"</span>,
+  <span class="s">"ppe"</span>: {
+    <span class="s">"helmet"</span>: <span class="n">0.94</span>, <span class="s">"vest"</span>: <span class="n">0.87</span>,
+    <span class="s">"gloves"</span>: <span class="n">0.21</span>, <span class="s">"glasses"</span>: <span class="n">0.05</span>
+  }
+}
+      </div>
+    </div>
+
+    <div class="callout callout-agent">
+      <div class="callout-label">Agent Task — Skeleton Extractor</div>
+      <p>Implement <code>src/skeleton/extractor.py</code> with a <code>SkeletonExtractor</code> class. Constructor takes <code>config: dict</code> with model paths, confidence thresholds, and device (cpu/cuda). The <code>extract(frame, metadata)</code> method returns a list of skeleton dicts matching the schema above. Implement the model selection logic table above — auto-detect person count from YOLO detection before deciding which model runs. ByteTrack must be initialized with <code>track_thresh=0.5, track_buffer=30, match_thresh=0.8</code>. Cache the MediaPipe Pose model in memory — do not reinitialize per frame. Run unit tests with pytest on 3 reference frames from SH17 dataset confirming non-empty keypoint output.</p>
+    </div>
+  </div>
+
+  <!-- 8. IMU FUSION -->
+  <div class="prd-section" id="imu">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2 class="section-title">IMU Fusion Layer</h2>
+    </div>
+
+    <p>When IMU data is available (OpenMarcie dataset has synchronized IMU, future field device will have it), this layer fuses accelerometer readings with skeleton keypoints to produce <strong>occlusion-robust skeleton enrichment</strong> and <strong>physics-based auto-labels</strong> (fall, impact, rapid movement).</p>
+
+    <p>When IMU data is not available (COCO, SH17, iSafetyBench processing), this layer is skipped and IMU features are zeroed in the feature vector with an <code>imu_available: false</code> flag.</p>
+
+    <div class="subsection">
+      <div class="subsection-title">IMU Auto-Labels (Free Annotation from Physics)</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Label</th><th>IMU Condition</th><th>Confidence</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-bold">fall_event</td>
+              <td><code>|accel| &gt; 2.5g</code> for 50ms then <code>&lt; 0.5g</code> for 200ms</td>
+              <td><span class="badge badge-green">High</span></td>
+              <td>Auto-label sequence. No human review needed.</td>
+            </tr>
+            <tr>
+              <td class="td-bold">impact_detected</td>
+              <td><code>|accel| &gt; 3.0g</code> single spike</td>
+              <td><span class="badge badge-green">High</span></td>
+              <td>Flag 2s clip around spike for human review</td>
+            </tr>
+            <tr>
+              <td class="td-bold">rapid_movement</td>
+              <td>SMA (Signal Magnitude Area) &gt; 2.0 over 1s window</td>
+              <td><span class="badge badge-amber">Medium</span></td>
+              <td>Flag as high-activity period in metadata</td>
+            </tr>
+            <tr>
+              <td class="td-bold">static_posture</td>
+              <td>SMA &lt; 0.3 for &gt; 30s</td>
+              <td><span class="badge badge-green">High</span></td>
+              <td>Auto-label idle / standing still</td>
+            </tr>
+            <tr>
+              <td class="td-bold">bending_forward</td>
+              <td>pitch &gt; 35° sustained for &gt; 3s</td>
+              <td><span class="badge badge-amber">Medium</span></td>
+              <td>Flag for ergonomic risk annotation</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout callout-agent">
+      <div class="callout-label">Agent Task — IMU Fusion Module</div>
+      <p>Implement <code>src/imu/fusion.py</code> with two classes: (1) <code>ComplementaryFilter</code> that takes ax/ay/az at variable sample rates and outputs pitch/roll in degrees, using alpha=0.98. (2) <code>IMUAutoLabeler</code> that takes a buffer of IMU readings (list of dicts with ax/ay/az/timestamp_ms) and returns a list of <code>AutoLabel</code> dataclasses with fields: label_type, confidence, start_ms, end_ms, metadata. Must handle the case where IMU and video are on different sample rates — interpolate IMU to match video frame timestamps using numpy interp. Include a <code>test_imu_fusion.py</code> that generates synthetic fall signature data and verifies the fall_event label fires correctly.</p>
+    </div>
+  </div>
+
+  <!-- 9. AUTO-ANNOTATION -->
+  <div class="prd-section" id="annotation">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <h2 class="section-title">Auto-annotation & Review System</h2>
+    </div>
+
+    <p>The annotation system has two paths: auto-accepted frames go directly to dataset storage; review-flagged frames are pushed to a local Label Studio instance for human correction. The goal is less than 10 minutes of human annotation per hour of processed video.</p>
+
+    <div class="subsection">
+      <div class="subsection-title">Label Studio Integration</div>
+      <ol class="step-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title">Run Label Studio locally</div>
+            <div class="step-body"><code>label-studio start --port 8080</code> — runs entirely on your machine, no cloud account needed</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title">Pipeline pushes review tasks via SDK</div>
+            <div class="step-body">When G2 returns REVIEW, the pipeline calls <code>label_studio_sdk</code> to create a task with the frame image + auto-skeleton overlay as the pre-annotation. Reviewer sees what the model got and just corrects it.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">Reviewer corrects keypoints (target: 30s per frame)</div>
+            <div class="step-body">Pre-annotated skeletons mean reviewers drag existing points, not place them from scratch. 30s/frame is achievable when &gt;80% of keypoints are already correct.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="step-title">Completed reviews pulled back via SDK and merged into dataset</div>
+            <div class="step-body">Reviewed annotations replace auto-predictions in SQLite and are flagged <code>human_verified: true</code>. These count double in training sample weighting.</div>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="callout callout-agent">
+      <div class="callout-label">Agent Task — Annotation Module</div>
+      <p>Implement <code>src/annotation/annotator.py</code> with a <code>AnnotationRouter</code> class. It takes a skeleton dict and quality gate result and routes to either: (1) <code>DatasetWriter</code> — writes to SQLite and appends to COCO JSON in-memory, (2) <code>LabelStudioPusher</code> — creates a Label Studio task with the frame image encoded as base64 and the skeleton as pre-annotation in Label Studio's keypoint format. The LabelStudio project must use the <code>KeypointLabels</code> template with all 17 COCO keypoints defined. Write a <code>scripts/pull_reviews.py</code> that fetches completed tasks from Label Studio and merges them back into the SQLite database, marking records as <code>human_verified=True</code>.</p>
+    </div>
+  </div>
+
+  <!-- 10. STORAGE & VERSIONING -->
+  <div class="prd-section" id="storage">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <h2 class="section-title">Storage & Dataset Versioning</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Store</th><th>Technology</th><th>What Goes In</th><th>Location</th><th>Version Control</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-bold">Annotations</td>
+            <td class="td-mono">SQLite</td>
+            <td>Skeleton dicts, quality gate results, human_verified flag, session metadata</td>
+            <td><code>data/processed/annotations.db</code></td>
+            <td>DVC tracked</td>
+          </tr>
+          <tr>
+            <td class="td-bold">Frames</td>
+            <td class="td-mono">JPEG files</td>
+            <td>Auto-accepted frames only. Review frames temporarily only.</td>
+            <td><code>data/processed/frames/</code></td>
+            <td>DVC tracked</td>
+          </tr>
+          <tr>
+            <td class="td-bold">Feature vectors</td>
+            <td class="td-mono">NumPy .npy</td>
+            <td>float32[20] per worker per 1s window. One file per session.</td>
+            <td><code>data/processed/features/</code></td>
+            <td>DVC tracked</td>
+          </tr>
+          <tr>
+            <td class="td-bold">COCO export</td>
+            <td class="td-mono">JSON</td>
+            <td>Full COCO keypoints format — directly usable by Ultralytics trainer</td>
+            <td><code>data/processed/coco_export.json</code></td>
+            <td>DVC tracked</td>
+          </tr>
+          <tr>
+            <td class="td-bold">Models</td>
+            <td class="td-mono">MLflow</td>
+            <td>Every training run, hyperparams, metrics, ONNX artifact</td>
+            <td><code>mlruns/</code> local</td>
+            <td>MLflow versioned</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">DVC Dataset Versioning</div>
+      <div class="code-block">
+        <span class="cb-label">scripts/commit_dataset_version.sh</span>
+<span class="c">#!/bin/bash</span>
+<span class="c"># Run after each major dataset update</span>
+<span class="c"># Tags the dataset with frame count + date for reproducibility</span>
+
+FRAME_COUNT=$(<span class="k">python</span> -c <span class="s">"import sqlite3; c=sqlite3.connect('data/processed/annotations.db'); print(c.execute('SELECT COUNT(*) FROM annotations WHERE quality_gate=\"AUTO_ACCEPT\"').fetchone()[0])"</span>)
+VERSION=<span class="s">"v$(date +%Y%m%d)_${FRAME_COUNT}frames"</span>
+
+<span class="k">dvc</span> add data/processed/
+<span class="k">git</span> add data/processed.dvc .gitignore
+<span class="k">git</span> commit -m <span class="s">"dataset: ${VERSION} — auto-accepted frames + reviewed"</span>
+<span class="k">git</span> tag -a <span class="s">"$VERSION"</span> -m <span class="s">"Dataset snapshot: $FRAME_COUNT frames"</span>
+<span class="k">echo</span> <span class="s">"Committed dataset version: $VERSION"</span>
+      </div>
+    </div>
+
+    <div class="callout callout-agent">
+      <div class="callout-label">Agent Task — Storage Layer</div>
+      <p>Implement <code>src/annotation/storage.py</code> with a <code>DatasetWriter</code> class. Schema: SQLite table <code>annotations</code> with columns: id (UUID), session_id, frame_idx, timestamp_ms, track_id, quality_gate, human_verified, skeleton_json (TEXT), ppe_json (TEXT), feature_vector (BLOB), risk_score (REAL), action_class (TEXT), created_at. Implement a <code>export_coco(output_path)</code> method that queries all AUTO_ACCEPT and human_verified=True records and writes a valid COCO keypoints JSON. Validate the export with <code>pycocotools</code> COCO loader — it must load without errors.</p>
+    </div>
+  </div>
+
+  <!-- 11. TRAINING LOOP -->
+  <div class="prd-section" id="training">
+    <div class="section-header">
+      <span class="section-num">11</span>
+      <h2 class="section-title">Training Loop</h2>
+    </div>
+
+    <p>Three models are trained sequentially. Each model uses the output of the previous as a component. Training runs on Colab Pro / Vast.ai — not local machine.</p>
+
+    <div class="subsection">
+      <div class="subsection-title">Model 1 — Industrial Pose Detector (Fine-tune)</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Base model</td><td><code>yolov8s-pose.pt</code> — pretrained on COCO</td></tr>
+            <tr><td>Fine-tune data</td><td>SH17 + Roboflow Worker Safety (industrial domain)</td></tr>
+            <tr><td>Epochs</td><td>50 — early stopping patience=10</td></tr>
+            <tr><td>Image size</td><td>640</td></tr>
+            <tr><td>Batch size</td><td>16 on T4, 32 on A100</td></tr>
+            <tr><td>Augmentation</td><td>Mosaic + HSV + horizontal flip (no vertical flip for workers)</td></tr>
+            <tr><td>Target mAP50</td><td>&gt; 0.82 on industrial val set</td></tr>
+            <tr><td>Export</td><td>ONNX + TensorRT INT8 (for future edge deployment)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Model 2 — Action Classifier</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Architecture</td><td>ST-GCN (Spatial Temporal Graph Convolutional Network)</td></tr>
+            <tr><td>Input</td><td>Sequence of 30 skeleton frames (1s at 30fps), 17 keypoints × 2D</td></tr>
+            <tr><td>Training data</td><td>NTU RGB+D 120 (action classes) + iSafetyBench (hazard classes)</td></tr>
+            <tr><td>Output classes</td><td>fall, bend_ergonomic, walk, reach_overhead, idle, run, crouch, machine_interaction, danger_posture</td></tr>
+            <tr><td>Framework</td><td>PyTorch 2.3 + MMAction2 ST-GCN implementation</td></tr>
+            <tr><td>Target accuracy</td><td>Top-1 &gt; 78% on iSafetyBench hazard categories</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Model 3 — Risk Scorer</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Architecture</td><td>XGBoost (gradient boosted trees — interpretable, fast, no GPU needed)</td></tr>
+            <tr><td>Input</td><td>20-dim feature vector per worker per 1s window</td></tr>
+            <tr><td>Output</td><td>risk_score ∈ [0.0, 1.0]</td></tr>
+            <tr><td>Labels</td><td>Derived from iSafetyBench hazard annotations + IMU auto-labels</td></tr>
+            <tr><td>Explainability</td><td>SHAP TreeExplainer — top 5 features per prediction</td></tr>
+            <tr><td>Calibration</td><td>Isotonic regression — ECE target &lt; 0.06</td></tr>
+            <tr><td>Inference</td><td>&lt; 2ms per prediction on any CPU</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout callout-agent">
+      <div class="callout-label">Agent Task — Training Scripts</div>
+      <p>Create three training scripts: (1) <code>src/training/train_pose.py</code> — uses Ultralytics CLI wrapper to fine-tune YOLOv8s-pose on SH17+Roboflow data, logs all metrics to MLflow, exports ONNX on completion. (2) <code>src/training/train_action.py</code> — loads NTU RGB+D skeleton sequences, builds ST-GCN with MMAction2, trains with PyTorch Lightning, saves best checkpoint. (3) <code>src/training/train_risk.py</code> — loads feature vectors from <code>data/processed/features/</code>, trains XGBoost with 5-fold CV, calibrates with isotonic regression, computes and saves SHAP explainer. All three must log to the same MLflow experiment <code>tentellect_pipeline_v1</code>.</p>
+    </div>
+  </div>
+
+  <!-- 12. PHASE PLAN -->
+  <div class="prd-section" id="phases">
+    <div class="section-header">
+      <span class="section-num">12</span>
+      <h2 class="section-title">8-Week Phase Plan</h2>
+    </div>
+
+    <div class="phase-grid">
+      <div class="phase-card pc-p0">
+        <div class="phase-card-label">Phase 0 · Weeks 1–2</div>
+        <div class="phase-card-title">Foundation & Data</div>
+        <div class="phase-card-body">Download all Tier 1 datasets. Set up repo structure and environment. Validate dataset integrity. Run baseline YOLOv8-Pose on 100 SH17 images to establish confidence distribution baseline.</div>
+      </div>
+      <div class="phase-card pc-p1">
+        <div class="phase-card-label">Phase 1 · Weeks 3–4</div>
+        <div class="phase-card-title">Pipeline Core</div>
+        <div class="phase-card-body">Build ingestion, skeleton extractor, quality gates, and storage layer. Process all of SH17 through the pipeline. Target: 5,000+ auto-accepted labeled frames in dataset. Label Studio running locally.</div>
+      </div>
+      <div class="phase-card pc-p2">
+        <div class="phase-card-label">Phase 2 · Weeks 5–6</div>
+        <div class="phase-card-title">IMU Fusion + Training</div>
+        <div class="phase-card-body">Download OpenMarcie, process 37hr of industrial video. Run IMU fusion on OpenMarcie wearable data. Fine-tune YOLOv8-Pose on industrial images. Train action classifier on NTU RGB+D + iSafetyBench.</div>
+      </div>
+      <div class="phase-card pc-p3">
+        <div class="phase-card-label">Phase 3 · Weeks 7–8</div>
+        <div class="phase-card-title">Risk Scorer + Demo</div>
+        <div class="phase-card-body">Train XGBoost risk scorer. Build <code>run_pipeline.py</code> end-to-end script. Create a demo video processing any factory footage and returning annotated output. Measure all metrics against targets.</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-week">Week 1</div>
+        <div class="tl-title">Repo + Environment + Data Download</div>
+        <div class="tl-tasks">
+          <div class="tl-task"><div class="tl-task-dot"></div>Create GitHub repo with directory structure from §03</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Run <code>download_datasets.sh</code> — COCO, SH17, Roboflow Worker Safety, iSafetyBench</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Run <code>validate_datasets.py</code> — check frame counts, annotation formats, no corrupt files</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Set up conda environment, verify torch + ultralytics + mediapipe imports on dev machine</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Submit request forms for OpenMarcie + Human3.6M + NTU RGB+D (takes 3–7 days to approve)</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-week">Week 2</div>
+        <div class="tl-title">Baseline + Ingestion Layer</div>
+        <div class="tl-tasks">
+          <div class="tl-task"><div class="tl-task-dot"></div>Run baseline YOLOv8s-pose (pretrained) on 500 random SH17 images — record confidence distribution</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Build and test <code>DataIngestor</code> — process SH17 as batch mode, yield frames with metadata</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Build <code>preprocess_frame()</code> — verify CLAHE improves detection on dark factory images</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Measure: what % of SH17 frames pass G1 (person detected) with default model?</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-week">Week 3</div>
+        <div class="tl-title">Skeleton Extractor + Quality Gates</div>
+        <div class="tl-tasks">
+          <div class="tl-task"><div class="tl-task-dot"></div>Build <code>SkeletonExtractor</code> with model selection logic</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Build <code>QualityGate</code> with G1/G2/G3 — measure auto-accept rate on SH17</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Set up Label Studio locally, configure keypoint template, test push/pull cycle</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Process all 8,099 SH17 images — collect first dataset version</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-week">Week 4</div>
+        <div class="tl-title">Storage + Annotation + First Dataset Export</div>
+        <div class="tl-tasks">
+          <div class="tl-task"><div class="tl-task-dot"></div>Build <code>DatasetWriter</code> — SQLite schema, COCO JSON export, DVC versioning</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Build <code>AnnotationRouter</code> — auto-accept path + Label Studio push path</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Review ~200 flagged frames in Label Studio (you + Arunmozhi, 1hr each)</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>First DVC commit — dataset v20250414_Nframes</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Target: 5,000 auto-accepted + 200 human-verified frames in dataset</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-week">Week 5</div>
+        <div class="tl-title">IMU Fusion + OpenMarcie Processing</div>
+        <div class="tl-tasks">
+          <div class="tl-task"><div class="tl-task-dot"></div>OpenMarcie dataset should be approved — download 40GB</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Build <code>ComplementaryFilter</code> and <code>IMUAutoLabeler</code></div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Run IMU fusion on OpenMarcie wearable streams — validate fall detection fires correctly</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Process OpenMarcie video with skeleton extractor — adds industrial egocentric data to dataset</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Build feature extractor — 20-dim vector, test on processed frames</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-week">Week 6</div>
+        <div class="tl-title">Industrial Fine-Tune (YOLOv8-Pose)</div>
+        <div class="tl-tasks">
+          <div class="tl-task"><div class="tl-task-dot"></div>Fine-tune YOLOv8s-pose on SH17 + Roboflow on Vast.ai RTX 4090 ($~5 total)</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Log all metrics to MLflow. Compare mAP before/after on held-out SH17 val set.</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Process iSafetyBench 1,100 video clips with pipeline — extract skeleton sequences</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Build action classifier training data from NTU RGB+D (if approved) + iSafetyBench labels</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-week">Week 7</div>
+        <div class="tl-title">Action Classifier + Risk Scorer</div>
+        <div class="tl-tasks">
+          <div class="tl-task"><div class="tl-task-dot"></div>Train ST-GCN action classifier on Colab Pro — target Top-1 &gt; 78% on hazard classes</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Train XGBoost risk scorer on feature vectors — calibrate with isotonic regression</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Compute SHAP values — verify top features make physical sense (PPE score, zone proximity)</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Run end-to-end pipeline on one iSafetyBench video — check risk scores on hazardous vs normal clips</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-week">Week 8</div>
+        <div class="tl-title">Demo Build + Metrics + Traction Package</div>
+        <div class="tl-tasks">
+          <div class="tl-task"><div class="tl-task-dot"></div>Build <code>scripts/run_pipeline.py</code> — single entry point, any video in → annotated output</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Record demo video: input factory clip → skeleton overlay → risk scores → COCO JSON export</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Write 1-page metrics report: dataset size, mAP delta, action accuracy, risk ECE, throughput</div>
+          <div class="tl-task"><div class="tl-task-dot"></div>Prepare outreach to 5 robotics companies: "Give us your video. We return labeled skeletons in 24hr."</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 13. AGENT INSTRUCTIONS -->
+  <div class="prd-section" id="agent">
+    <div class="section-header">
+      <span class="section-num">13</span>
+      <h2 class="section-title">Master Agent Instructions</h2>
+    </div>
+
+    <p>The following is the complete instruction set for an AI coding agent (Claude, Cursor, etc.) tasked with building this pipeline. Hand this section to the agent as the system prompt or first message.</p>
+
+    <div class="agent-block">
+      <div class="agent-block-header">
+        <div class="agent-block-icon">⚡</div>
+        <div class="agent-block-title">Agent System Prompt — Tentellect Pipeline Build</div>
+      </div>
+      <div class="agent-block-body">
+        <p>You are a senior systems and ML engineer building the Tentellect skeleton AI pipeline. Your job is to implement this codebase from scratch, following this PRD exactly. Here are your operating rules:</p>
+
+        <p><strong>Code standards:</strong> Python 3.11. Type hints on every function. Docstrings on every class and public method. No print statements — use Python logging with levels DEBUG/INFO/WARNING/ERROR. All config in <code>configs/pipeline.yaml</code>, never hardcoded. All file paths relative to project root via pathlib.Path.</p>
+
+        <p><strong>Testing:</strong> Every module must have a corresponding test file in <code>tests/</code>. Use pytest. Tests must run in under 30 seconds total using small fixture data — never require a full dataset download to run tests. Use a 5-frame synthetic video fixture for ingestion tests. Use 10 pre-saved skeleton dicts for quality gate tests.</p>
+
+        <p><strong>Error handling:</strong> Never let the pipeline crash silently. All exceptions must be caught, logged with full traceback, and the frame/clip must be routed to a <code>data/processed/errors/</code> directory with the error reason in a sidecar JSON file. The pipeline must continue processing remaining frames after any single-frame failure.</p>
+
+        <p><strong>Build order — follow exactly:</strong></p>
+        <p>1. <code>scripts/download_datasets.sh</code> → 2. <code>scripts/validate_datasets.py</code> → 3. <code>src/ingestion/preprocess.py</code> → 4. <code>src/ingestion/ingestor.py</code> → 5. <code>src/skeleton/extractor.py</code> → 6. <code>src/annotation/quality_gates.py</code> → 7. <code>src/imu/fusion.py</code> → 8. <code>src/annotation/annotator.py</code> → 9. <code>src/annotation/storage.py</code> → 10. <code>src/features/extractor.py</code> → 11. <code>src/training/train_pose.py</code> → 12. <code>src/training/train_action.py</code> → 13. <code>src/training/train_risk.py</code> → 14. <code>scripts/run_pipeline.py</code></p>
+
+        <p><strong>After each module:</strong> Run its test file. If tests fail, fix before moving to next module. Do not skip ahead.</p>
+
+        <p><strong>Hardware assumption:</strong> Dev machine is CPU-only. Cloud inference (Vast.ai) is used for GPU workloads. Write all inference code with a <code>device: str = "cpu"</code> parameter so it runs locally for testing and on GPU in production.</p>
+
+        <p><strong>When you are unsure about a design decision:</strong> Default to the simpler option. Write a TODO comment with your reasoning. Do not ask for clarification — make a decision and document it.</p>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Agent Task Checklist — Complete Build</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Module</th><th>File</th><th>Tests</th><th>Priority</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-mono">01</td>
+              <td class="td-bold">Dataset downloader</td>
+              <td><code>scripts/download_datasets.sh</code></td>
+              <td>Manual verify</td>
+              <td><span class="badge badge-red">P0</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">02</td>
+              <td class="td-bold">Dataset validator</td>
+              <td><code>scripts/validate_datasets.py</code></td>
+              <td><code>tests/test_validate.py</code></td>
+              <td><span class="badge badge-red">P0</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">03</td>
+              <td class="td-bold">Frame preprocessor</td>
+              <td><code>src/ingestion/preprocess.py</code></td>
+              <td><code>tests/test_preprocess.py</code></td>
+              <td><span class="badge badge-red">P0</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">04</td>
+              <td class="td-bold">Data ingestor</td>
+              <td><code>src/ingestion/ingestor.py</code></td>
+              <td><code>tests/test_ingestor.py</code></td>
+              <td><span class="badge badge-red">P0</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">05</td>
+              <td class="td-bold">Skeleton extractor</td>
+              <td><code>src/skeleton/extractor.py</code></td>
+              <td><code>tests/test_skeleton.py</code></td>
+              <td><span class="badge badge-red">P0</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">06</td>
+              <td class="td-bold">Quality gates</td>
+              <td><code>src/annotation/quality_gates.py</code></td>
+              <td><code>tests/test_quality_gates.py</code></td>
+              <td><span class="badge badge-red">P0</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">07</td>
+              <td class="td-bold">IMU fusion</td>
+              <td><code>src/imu/fusion.py</code></td>
+              <td><code>tests/test_imu_fusion.py</code></td>
+              <td><span class="badge badge-amber">P1</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">08</td>
+              <td class="td-bold">Annotation router</td>
+              <td><code>src/annotation/annotator.py</code></td>
+              <td><code>tests/test_annotator.py</code></td>
+              <td><span class="badge badge-red">P0</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">09</td>
+              <td class="td-bold">Dataset storage</td>
+              <td><code>src/annotation/storage.py</code></td>
+              <td><code>tests/test_storage.py</code></td>
+              <td><span class="badge badge-red">P0</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">10</td>
+              <td class="td-bold">Feature extractor</td>
+              <td><code>src/features/extractor.py</code></td>
+              <td><code>tests/test_features.py</code></td>
+              <td><span class="badge badge-red">P0</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">11</td>
+              <td class="td-bold">Pose fine-tune</td>
+              <td><code>src/training/train_pose.py</code></td>
+              <td>MLflow run validates</td>
+              <td><span class="badge badge-amber">P1</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">12</td>
+              <td class="td-bold">Action classifier</td>
+              <td><code>src/training/train_action.py</code></td>
+              <td>MLflow run validates</td>
+              <td><span class="badge badge-amber">P1</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">13</td>
+              <td class="td-bold">Risk scorer</td>
+              <td><code>src/training/train_risk.py</code></td>
+              <td><code>tests/test_risk.py</code></td>
+              <td><span class="badge badge-amber">P1</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">14</td>
+              <td class="td-bold">Pipeline entrypoint</td>
+              <td><code>scripts/run_pipeline.py</code></td>
+              <td>End-to-end integration test</td>
+              <td><span class="badge badge-blue">P2</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">15</td>
+              <td class="td-bold">Review puller</td>
+              <td><code>scripts/pull_reviews.py</code></td>
+              <td><code>tests/test_pull_reviews.py</code></td>
+              <td><span class="badge badge-blue">P2</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">16</td>
+              <td class="td-bold">Dataset version commit</td>
+              <td><code>scripts/commit_dataset_version.sh</code></td>
+              <td>Manual verify</td>
+              <td><span class="badge badge-blue">P2</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 14. SUCCESS METRICS -->
+  <div class="prd-section" id="success">
+    <div class="section-header">
+      <span class="section-num">14</span>
+      <h2 class="section-title">Success Metrics</h2>
+    </div>
+
+    <p>These are the numbers you measure at end of Week 8. If you hit all of them, you have a demo worth showing. If you miss any, you understand exactly what to fix.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Metric</th><th>Target</th><th>How to Measure</th><th>Why It Matters</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-bold">Dataset size</td>
+            <td><code>&gt; 20,000 frames</code></td>
+            <td>SQLite row count on AUTO_ACCEPT + human_verified</td>
+            <td>Credibility threshold for showing to robotics companies</td>
+          </tr>
+          <tr>
+            <td class="td-bold">Pose mAP50 — industrial</td>
+            <td><code>&gt; 0.82</code></td>
+            <td>Ultralytics val on SH17 held-out set (15% split)</td>
+            <td>Proves fine-tune on industrial data actually helps</td>
+          </tr>
+          <tr>
+            <td class="td-bold">Pose mAP50 delta</td>
+            <td><code>&gt; +0.05</code> vs pretrained</td>
+            <td>Compare fine-tuned model vs <code>yolov8s-pose.pt</code> baseline</td>
+            <td>The delta is your traction number — "our model is 5+ points better on factory data"</td>
+          </tr>
+          <tr>
+            <td class="td-bold">Action Top-1 accuracy</td>
+            <td><code>&gt; 78%</code></td>
+            <td>ST-GCN eval on iSafetyBench hazard category subset</td>
+            <td>Proves the skeleton features carry enough signal for action recognition</td>
+          </tr>
+          <tr>
+            <td class="td-bold">Risk score ECE</td>
+            <td><code>&lt; 0.06</code></td>
+            <td>Expected Calibration Error on held-out feature vectors</td>
+            <td>Calibrated scores are trustworthy — critical for safety applications</td>
+          </tr>
+          <tr>
+            <td class="td-bold">Pipeline throughput</td>
+            <td><code>&gt; 50 frames/sec</code></td>
+            <td>Time 1000 frames end-to-end on Vast.ai T4 instance</td>
+            <td>1 hour of video processed in under 5 minutes — demo requirement</td>
+          </tr>
+          <tr>
+            <td class="td-bold">Auto-accept rate</td>
+            <td><code>&gt; 70%</code></td>
+            <td>Fraction of frames that pass G2 without human review</td>
+            <td>Below 70% means annotation cost is too high to scale</td>
+          </tr>
+          <tr>
+            <td class="td-bold">Human review time</td>
+            <td><code>&lt; 10min/hr of video</code></td>
+            <td>Time a review session manually</td>
+            <td>Defines the true cost of dataset building at scale</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 15. RISKS -->
+  <div class="prd-section" id="risks">
+    <div class="section-header">
+      <span class="section-num">15</span>
+      <h2 class="section-title">Known Risks & Mitigations</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-bold">NTU RGB+D / Human3.6M request takes &gt; 2 weeks</td>
+            <td><span class="badge badge-amber">Medium</span></td>
+            <td><span class="badge badge-amber">Medium</span></td>
+            <td>Action classifier can be trained on iSafetyBench alone for Week 6–7 while waiting. Submit both requests in Week 1.</td>
+          </tr>
+          <tr>
+            <td class="td-bold">Auto-accept rate below 70% on SH17</td>
+            <td><span class="badge badge-amber">Medium</span></td>
+            <td><span class="badge badge-blue">Low</span></td>
+            <td>Lower G2 threshold temporarily to 0.75 for SH17 batch — these are studio-quality images so model should perform well. Investigate which keypoints are failing.</td>
+          </tr>
+          <tr>
+            <td class="td-bold">Vast.ai GPU spot instance preempted mid-training</td>
+            <td><span class="badge badge-amber">Medium</span></td>
+            <td><span class="badge badge-blue">Low</span></td>
+            <td>All training scripts must checkpoint every 5 epochs. Use <code>--resume</code> flag on restart. Always use on-demand instances for the final training run.</td>
+          </tr>
+          <tr>
+            <td class="td-bold">ST-GCN action classifier underperforms on industrial video</td>
+            <td><span class="badge badge-amber">Medium</span></td>
+            <td><span class="badge badge-amber">Medium</span></td>
+            <td>Fall back to a simpler rule-based action classifier using keypoint angles if ST-GCN doesn't hit targets. Rule-based is not elegant but it works and is explainable.</td>
+          </tr>
+          <tr>
+            <td class="td-bold">OpenMarcie IMU format incompatible with fusion layer</td>
+            <td><span class="badge badge-blue">Low</span></td>
+            <td><span class="badge badge-blue">Low</span></td>
+            <td>Write a format adapter in <code>src/imu/adapters/openmarcie.py</code> to normalize to internal IMU dict format before fusion.</td>
+          </tr>
+          <tr>
+            <td class="td-bold">No factory video to demo with publicly</td>
+            <td><span class="badge badge-red">High</span></td>
+            <td><span class="badge badge-amber">Medium</span></td>
+            <td>Use iSafetyBench clips for demo (already processed and have ground truth). Alternatively, use publicly available YouTube factory footage — search "manufacturing floor time-lapse" for clean material.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-danger">
+      <div class="callout-label">Hard Stop</div>
+      <p>Do not begin fine-tuning (Week 6) until the dataset has at least <strong>5,000 auto-accepted frames from SH17</strong> with quality gate passing. Training on low-confidence auto-annotations produces a model that is worse than the pretrained baseline — this is the most common mistake in fast-moving annotation pipelines.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <div class="footer-left">
+      Tentellect Internal — Confidential<br>
+      PRD v1.0 · Authored by Anvin · April 2025<br>
+      Next review: end of Week 4
+    </div>
+    <div class="footer-right">TENTELLECT</div>
+  </div>
+
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environments
+.venv/
+venv/
+.env/
+
+# Tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# ML artifacts and local data
+mlruns/
+data/
+models/checkpoints/
+yolov8s-pose.pt
+
+# Separate project in this workspace
+docs-site/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,0 +1,43 @@
+project:
+  name: tentellect_pipeline
+  version: 0.1.0
+
+paths:
+  data_root: data
+  processed_root: data/processed
+  annotations_db: data/processed/annotations.db
+  coco_export: data/processed/coco_export.json
+  errors_root: data/processed/errors
+
+ingestion:
+  dataset_fps: 2
+  realtime_fps: 15
+  target_width: 640
+  target_height: 480
+  clahe_clip_limit: 2.0
+  clahe_tile_grid: [8, 8]
+
+skeleton:
+  yolo_model: models/checkpoints/yolov8s-pose.pt
+  yolo_conf_threshold: 0.6
+  ensemble_conf_threshold: 0.7
+  mediapipe_model_complexity: 1
+  # Tasks API bundle (auto-downloaded if missing); legacy ``solutions.pose`` used when available (e.g. Python 3.11).
+  mediapipe_tasks_model_path: models/checkpoints/pose_landmarker_lite.task
+  mediapipe_tasks_model_url: https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task
+
+tracking:
+  track_thresh: 0.5
+  track_buffer: 30
+  match_thresh: 0.8
+
+quality_gates:
+  g1_detection_threshold: 0.6
+  # Demo-friendly defaults. For pristine still-image datasets (e.g. COCO val), you can raise these.
+  g2_auto_accept_threshold: 0.65
+  g2_review_threshold: 0.35
+  min_visible_keypoints: 8
+
+runtime:
+  device: cpu
+  log_level: INFO

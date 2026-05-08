@@ -1,0 +1,10 @@
+# Tentellect MotionIQ POC — minimal requirements
+# Install into existing venv: pip install -r poc/requirements_poc.txt
+
+streamlit>=1.35.0
+ultralytics>=8.2.0
+mediapipe>=0.10.30
+onnxruntime>=1.18.0
+opencv-python-headless
+numpy
+pyyaml

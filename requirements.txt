@@ -5,13 +5,13 @@
 # Core inference
 ultralytics>=8.2.0
 mediapipe>=0.10.30
-onnxruntime-gpu>=1.18.0
+onnxruntime>=1.18.0
 
 # Data and annotation
 pycocotools>=2.0.7
 label-studio>=1.12.0
 label-studio-sdk
-dvc[s3]>=3.50.0
+dvc>=3.50.0
 roboflow
 
 # ML stack

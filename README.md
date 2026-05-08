@@ -1,90 +1,126 @@
 # Tentellect MotionIQ Pipeline
 
-Tentellect MotionIQ is a skeleton-first industrial safety intelligence system.
+> **Skeleton-first industrial safety intelligence for the shop floor.**
+> Egocentric (cap-mounted) + full-body pose tracking with live risk scoring and trainable action classification.
 
-This repository is the core pipeline and realtime control-plane implementation:
+---
 
-- ingest camera streams or media files
-- extract worker skeletons and track identities
-- apply quality gates and annotation routing
-- compute risk/action features
-- expose realtime robot-facing APIs
+## What This Repo Is
+
+Tentellect MotionIQ is the core pipeline and realtime control-plane:
+
+- Ingest camera streams or media files (webcam, video, RTSP, ESP32-CAM)
+- Extract worker skeletons (YOLO v8-pose + MediaPipe ensemble) or hand landmarks (MediaPipe Hands)
+- Apply quality gates and annotation routing
+- Compute risk / action features
+- Expose realtime robot-facing APIs
+- **POC live demo** with Teachable Machine-style in-app training
 
 ## Repository Scope
 
-- This repo contains the pipeline/runtime code.
-- `docs-site/` is a separate project and is ignored by this repository.
-- Operational viewer UI lives in `viewer-ui/` (separate app in this workspace).
+- `src/` — core pipeline modules
+- `scripts/` — CLI runners and dataset tooling
+- `poc/` — live Streamlit demo (egocentric + training)
+- `configs/` — pipeline YAML configuration
+- `tests/` — 13 test files
+- `docs/` — project docs and blueprints
+- `viewer-ui/` — placeholder for future frontend (not yet implemented)
 
 ## System Naming
 
 - **Platform:** Tentellect MotionIQ
-- **Hardware node:** MotionIQ Node
+- **Hardware node:** MotionIQ Node (ESP32-CAM on hard hat)
 - **Viewer app:** MotionIQ Viewer
 
 See `docs/SYSTEM_IDENTITY.md`.
 
-## Start Here
+---
 
-Read these in order:
-
-1. `docs/START_HERE.md`
-2. `docs/PROJECT_STATUS.md`
-3. `docs/HARDWARE_CAPTURE_BLUEPRINT.md`
-
-## Current Status
-
-Implemented and working:
-
-- batch pipeline execution (`scripts/run_pipeline.py`)
-- realtime API service (`scripts/run_realtime_server.py`)
-- robot command endpoint scaffold (`/robot/commands`)
-- dataset validation and test suite
-- viewer UI app for processed sessions (`viewer-ui/`)
-
-## Quick Start (Local)
+## 🚀 Quickest Path: Run the POC
 
 ```bash
+# 1. Create venv and install deps
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-pytest
-python scripts/run_pipeline.py --input data/sample_input/people.mp4 --mode auto --session-id smoke_local --max-frames 60
+pip install streamlit pandas
+
+# 2. Launch the live demo
+streamlit run poc/demo.py
+```
+
+Open **http://localhost:8501** — choose Webcam or upload a video, press **▶ Start**.
+
+### POC Features
+
+| Feature | Details |
+|---|---|
+| **Egocentric mode** | Designed for cap-mounted ESP32-CAM — tracks both hands with MediaPipe Hands (21 landmarks/hand) |
+| **Full-body mode** | YOLO v8-pose skeleton overlay with ByteTrack identity |
+| **Live risk scoring** | Heuristic action/risk classifier → visual risk bars, colour-coded overlays |
+| **Teachable Machine training** | Record action classes live → train KNN in-app → live predictions with confidence |
+| **Multi-source** | Webcam, video file upload, ESP32-CAM HTTP/RTSP stream |
+| **Alert dashboard** | Per-worker action, risk, quality gate, confidence metrics |
+
+### ESP32-CAM Integration
+
+Connect the ESP32-CAM to your WiFi network and use its stream URL:
+```
+http://<ESP32_IP>:81/stream       # MJPEG HTTP stream (default firmware)
+rtsp://<ESP32_IP>:8554/stream     # RTSP (if configured)
+```
+Select **ESP32-CAM (HTTP/RTSP)** in the sidebar and paste the URL.
+
+---
+
+## Batch Pipeline (CLI)
+
+```bash
+source .venv/bin/activate
+python scripts/run_pipeline.py \
+  --input data/sample_input/people.mp4 \
+  --mode auto \
+  --session-id smoke_local \
+  --max-frames 60
 ```
 
 Outputs are written to `data/processed/`.
 
-## Realtime Tracking + Robot API
+---
+
+## Realtime FastAPI Service
 
 ```bash
-python scripts/run_realtime_server.py --source data/sample_input/people.mp4 --session-id rt_demo --port 8091
+source .venv/bin/activate
+python scripts/run_realtime_server.py \
+  --source 0 \
+  --session-id rt_demo \
+  --port 8091
 ```
 
 Endpoints:
 
-- `GET /health`
-- `GET /state`
-- `GET /events?limit=100`
-- `GET /robot/commands`
+| Endpoint | Description |
+|---|---|
+| `GET /health` | Service liveness |
+| `GET /state` | Current tracked worker states |
+| `GET /events?limit=100` | Recent detection events |
+| `GET /robot/commands` | Robot action suggestions from risk/action |
 
-Note: current action/risk in realtime uses heuristic fallback until trained models are plugged into serving.
+> Action/risk uses heuristic fallback until trained models are plugged into serving.
 
-## Viewer UI (Separate App)
+---
 
-```bash
-cd viewer-ui
-npm install
-npm run dev -- --port 3010
-```
-
-Open `http://localhost:3010`.
-
-## Hardware Capture (Own Data)
+## Hardware Capture
 
 Use `docs/HARDWARE_CAPTURE_BLUEPRINT.md` for:
 
-- edge hardware BOM
-- capture/timestamp contract
-- robot integration strategy
+- Edge hardware BOM (ESP32-CAM + hard hat mount)
+- Capture / timestamp contract
+- Robot integration strategy
 - V1 vs V2 hardware roadmap
+
+---
 
 ## Build Order (PRD Reference)
 
@@ -102,3 +138,15 @@ Use `docs/HARDWARE_CAPTURE_BLUEPRINT.md` for:
 12. `src/training/train_action.py`
 13. `src/training/train_risk.py`
 14. `scripts/run_pipeline.py`
+15. **`poc/demo.py`** ← POC live demo ✅
+
+---
+
+## Docs
+
+| File | Purpose |
+|---|---|
+| `docs/START_HERE.md` | Fastest path to running |
+| `docs/PROJECT_STATUS.md` | Full completion / in-progress / blockers log |
+| `docs/HARDWARE_CAPTURE_BLUEPRINT.md` | ESP32-CAM hardware guide |
+| `docs/SYSTEM_IDENTITY.md` | Platform naming conventions |
